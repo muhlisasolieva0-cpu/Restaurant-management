@@ -19,9 +19,25 @@ interface Order {
   estimatedTime: number;
   dineInType: 'dine-in' | 'takeout';
   paymentMethod: 'visa' | 'mastercard' | 'amex' | 'debit';
+  tableNumber?: number;
+}
+
+interface Table {
+  id: number;
+  capacity: number;
+  available: boolean;
 }
 
 const CATEGORIES = ['Pizzas', 'Burgers', 'Steaks', 'Salads', 'Drinks', 'Breads', 'Desserts'];
+
+// Initialize tables (12 tables total, most available)
+const initializeTables = (): Table[] => {
+  return Array.from({ length: 12 }, (_, i) => ({
+    id: i + 1,
+    capacity: i < 4 ? 2 : i < 8 ? 4 : 6, // 2-seater, 4-seater, 6-seater
+    available: Math.random() > 0.3, // 70% available
+  }));
+};
 
 const PAYMENT_METHODS = [
   { id: 'visa', name: 'Visa', emoji: '💳', color: 'blue' },
@@ -37,6 +53,8 @@ export const CustomerDashboard: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('Pizzas');
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'visa' | 'mastercard' | 'amex' | 'debit'>('visa');
   const [dineInType, setDineInType] = useState<'dine-in' | 'takeout'>('dine-in');
+  const [tables] = useState<Table[]>(initializeTables());
+  const [selectedTable, setSelectedTable] = useState<number | null>(null);
   const { logout, user } = useAuthStore();
 
   // Timer for order tracking
@@ -94,6 +112,12 @@ export const CustomerDashboard: React.FC = () => {
   const processPayment = () => {
     if (cart.length === 0) return;
 
+    // Require table selection for dine-in orders
+    if (dineInType === 'dine-in' && !selectedTable) {
+      alert('🪑 Please select a table to continue');
+      return;
+    }
+
     const success = Math.random() > 0.05;
     
     if (success) {
@@ -108,6 +132,7 @@ export const CustomerDashboard: React.FC = () => {
         estimatedTime: estimatedMinutes * 60,
         dineInType,
         paymentMethod: selectedPaymentMethod,
+        tableNumber: dineInType === 'dine-in' && selectedTable ? selectedTable : undefined,
       };
 
       setCompletedOrder(newOrder);
@@ -241,6 +266,15 @@ export const CustomerDashboard: React.FC = () => {
 
           <Card className="mb-8 p-6">
             <h3 className="font-bold text-lg text-gray-900 mb-4">Your Order</h3>
+            
+            {completedOrder.dineInType === 'dine-in' && completedOrder.tableNumber && (
+              <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-sm font-semibold text-green-900 mb-2">🪑 TABLE INFORMATION</p>
+                <p className="text-2xl font-bold text-green-700">Table {completedOrder.tableNumber}</p>
+                <p className="text-xs text-green-600 mt-1">Your meal will be served at this table</p>
+              </div>
+            )}
+
             <div className="space-y-3">
               {completedOrder.items.map(item => (
                 <div key={item.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
@@ -484,7 +518,9 @@ export const CustomerDashboard: React.FC = () => {
                     <p className="text-xs font-semibold text-blue-900 mb-2">ORDER TYPE</p>
                     <div className="flex gap-2">
                       <button
-                        onClick={() => setDineInType('dine-in')}
+                        onClick={() => {
+                          setDineInType('dine-in');
+                        }}
                         className={`flex-1 py-2 rounded text-sm font-medium transition ${
                           dineInType === 'dine-in'
                             ? 'bg-blue-600 text-white'
@@ -494,7 +530,10 @@ export const CustomerDashboard: React.FC = () => {
                         🍽️ Dine-In
                       </button>
                       <button
-                        onClick={() => setDineInType('takeout')}
+                        onClick={() => {
+                          setDineInType('takeout');
+                          setSelectedTable(null);
+                        }}
                         className={`flex-1 py-2 rounded text-sm font-medium transition ${
                           dineInType === 'takeout'
                             ? 'bg-blue-600 text-white'
@@ -505,6 +544,38 @@ export const CustomerDashboard: React.FC = () => {
                       </button>
                     </div>
                   </div>
+
+                  {/* Table Selection for Dine-In */}
+                  {dineInType === 'dine-in' && (
+                    <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                      <p className="text-xs font-semibold text-green-900 mb-3">🪑 SELECT YOUR TABLE</p>
+                      <div className="grid grid-cols-3 gap-2">
+                        {tables.map(table => (
+                          <button
+                            key={table.id}
+                            onClick={() => table.available && setSelectedTable(table.id)}
+                            disabled={!table.available}
+                            className={`p-3 rounded-lg text-sm font-medium transition border-2 ${
+                              !table.available
+                                ? 'bg-gray-200 text-gray-500 border-gray-300 cursor-not-allowed opacity-50'
+                                : selectedTable === table.id
+                                ? 'bg-green-600 text-white border-green-600'
+                                : 'bg-white text-gray-700 border-green-300 hover:border-green-500'
+                            }`}
+                          >
+                            <div className="text-lg mb-1">{table.available ? '✅' : '❌'}</div>
+                            <div>T{table.id}</div>
+                            <div className="text-xs">{table.capacity}p</div>
+                          </button>
+                        ))}
+                      </div>
+                      {selectedTable && (
+                        <p className="text-xs text-green-700 mt-3 font-medium">
+                          ✓ Table {selectedTable} selected ({tables.find(t => t.id === selectedTable)?.capacity}-seater)
+                        </p>
+                      )}
+                    </div>
+                  )}
 
                   {/* Payment Methods */}
                   <div className="mb-4 p-3 bg-accent-50 border border-accent-200 rounded-lg">
