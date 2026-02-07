@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useRestaurantStore } from '@/store';
-import { Card, StatCard, Button, Badge } from '@/components/ui';
-import { formatCurrency, getStatusColor, getStatusIcon } from '@/utils/helpers';
+import { Card, StatCard, Badge } from '@/components/ui';
+import { formatCurrency } from '@/utils/helpers';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { TrendingUp, Users, DollarSign, Clock } from 'lucide-react';
+import { Users, DollarSign, Clock } from 'lucide-react';
 
 export const Dashboard: React.FC = () => {
   const { orders, tables, staff } = useRestaurantStore();
-  
+
   const totalRevenue = orders
     .filter(o => o.paymentStatus === 'completed')
     .reduce((sum, o) => sum + o.totalAmount, 0);
-  
+
   const completedOrders = orders.filter(o => o.status === 'served').length;
   const activeOrders = orders.filter(o => ['pending', 'confirmed', 'preparing', 'ready'].includes(o.status)).length;
   const occupiedTables = tables.filter(t => t.status === 'occupied').length;

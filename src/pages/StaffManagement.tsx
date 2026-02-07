@@ -1,32 +1,14 @@
 import React, { useState } from 'react';
 import { useRestaurantStore } from '@/store';
-import { Card, Button, Badge, Input } from '@/components/ui';
-import { Users, Plus, Edit2, Trash2, Briefcase } from 'lucide-react';
+import { Card, Button, Badge } from '@/components/ui';
+import { Plus, Edit2 } from 'lucide-react';
 import { formatDate } from '@/utils/helpers';
 
 export const StaffManagement: React.FC = () => {
   const { staff, updateStaffStatus } = useRestaurantStore();
   const [selectedStaff, setSelectedStaff] = useState<string | null>(null);
 
-  const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
-      active: 'bg-green-100 text-green-800',
-      inactive: 'bg-gray-100 text-gray-800',
-      'on-break': 'bg-yellow-100 text-yellow-800',
-    };
-    return colors[status] || colors.inactive;
-  };
 
-  const getRoleColor = (role: string) => {
-    const colors: Record<string, string> = {
-      manager: 'bg-purple-100 text-purple-800',
-      chef: 'bg-orange-100 text-orange-800',
-      waiter: 'bg-blue-100 text-blue-800',
-      cashier: 'bg-green-100 text-green-800',
-      delivery: 'bg-indigo-100 text-indigo-800',
-    };
-    return colors[role] || colors.manager;
-  };
 
   const byRole = staff.reduce((acc, member) => {
     if (!acc[member.role]) acc[member.role] = [];
@@ -76,9 +58,8 @@ export const StaffManagement: React.FC = () => {
                 <div
                   key={member.id}
                   onClick={() => setSelectedStaff(member.id)}
-                  className={`p-4 border rounded-lg cursor-pointer transition hover:shadow-elevation-2 ${
-                    selectedStaff === member.id ? 'ring-2 ring-primary-500 border-primary-500' : 'border-gray-200'
-                  }`}
+                  className={`p-4 border rounded-lg cursor-pointer transition hover:shadow-elevation-2 ${selectedStaff === member.id ? 'ring-2 ring-primary-500 border-primary-500' : 'border-gray-200'
+                    }`}
                 >
                   <div className="flex justify-between items-start mb-2">
                     <div>

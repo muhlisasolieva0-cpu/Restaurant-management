@@ -5,7 +5,6 @@ import {
   Users,
   UtensilsCrossed,
   Package,
-  Calendar,
   Menu,
   X,
   LogOut,
@@ -75,9 +74,8 @@ export default function App() {
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
       <aside
-        className={`${
-          sidebarOpen ? 'w-64' : 'w-20'
-        } bg-primary-900 text-white transition-all duration-300 flex flex-col shadow-elevation-3`}
+        className={`${sidebarOpen ? 'w-64' : 'w-20'
+          } bg-primary-900 text-white transition-all duration-300 flex flex-col shadow-elevation-3`}
       >
         {/* Logo */}
         <div className="h-16 flex items-center justify-center border-b border-primary-800">
@@ -95,11 +93,10 @@ export default function App() {
             <button
               key={item.id}
               onClick={() => setCurrentPage(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition mb-2 ${
-                currentPage === item.id
-                  ? 'bg-secondary-600 text-white'
-                  : 'text-gray-300 hover:bg-primary-800'
-              }`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition mb-2 ${currentPage === item.id
+                ? 'bg-secondary-600 text-white'
+                : 'text-gray-300 hover:bg-primary-800'
+                }`}
             >
               <span className={currentPage === item.id ? 'text-white' : item.color}>
                 {item.icon}

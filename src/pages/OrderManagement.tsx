@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useRestaurantStore } from '@/store';
 import { Card, Button, Badge, Input, Modal } from '@/components/ui';
 import { formatCurrency } from '@/utils/helpers';
-import { Plus, X, ShoppingCart, ChefHat } from 'lucide-react';
-import { Order, OrderItem } from '@/types/index';
+import { Plus, X, ShoppingCart } from 'lucide-react';
+import { Order } from '@/types/index';
 
 export const OrderManagement: React.FC = () => {
   const { orders, menuItems, addOrder } = useRestaurantStore();
@@ -17,11 +17,11 @@ export const OrderManagement: React.FC = () => {
     items: [] as Array<{ menuItemId: string; quantity: number }>,
   });
 
-  const filteredOrders = filterStatus === 'all' 
-    ? orders 
+  const filteredOrders = filterStatus === 'all'
+    ? orders
     : orders.filter(o => o.status === filterStatus);
 
-  const getEstimatedTime = (order: any) => {
+  const getEstimatedTime = (order: Order) => {
     if (order.preparationStartedAt) {
       const elapsed = (new Date().getTime() - order.preparationStartedAt.getTime()) / 60000;
       const maxTime = Math.max(...order.items.map(item => {
@@ -142,11 +142,10 @@ export const OrderManagement: React.FC = () => {
           <button
             key={status}
             onClick={() => setFilterStatus(status)}
-            className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition ${
-              filterStatus === status
+            className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition ${filterStatus === status
                 ? 'bg-primary-600 text-white shadow-elevation-2'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
+              }`}
           >
             {status.charAt(0).toUpperCase() + status.slice(1)}
           </button>
@@ -158,9 +157,8 @@ export const OrderManagement: React.FC = () => {
         {filteredOrders.map((order) => (
           <Card
             key={order.id}
-            className={`cursor-pointer transition transform hover:scale-105 ${
-              selectedOrder === order.id ? 'ring-2 ring-primary-500 scale-105' : ''
-            }`}
+            className={`cursor-pointer transition transform hover:scale-105 ${selectedOrder === order.id ? 'ring-2 ring-primary-500 scale-105' : ''
+              }`}
             onClick={() => setSelectedOrder(order.id)}
             elevated
           >
@@ -254,11 +252,10 @@ export const OrderManagement: React.FC = () => {
                 <button
                   key={option.value}
                   onClick={() => setNewOrderData({ ...newOrderData, dineInType: option.value as any })}
-                  className={`w-full p-3 rounded-lg border-2 transition text-left ${
-                    newOrderData.dineInType === option.value
+                  className={`w-full p-3 rounded-lg border-2 transition text-left ${newOrderData.dineInType === option.value
                       ? 'border-primary-600 bg-primary-50'
                       : 'border-gray-200 hover:border-gray-300'
-                  }`}
+                    }`}
                 >
                   <p className="font-semibold text-gray-900">{option.label}</p>
                   <p className="text-sm text-gray-600">{option.desc}</p>
@@ -297,11 +294,10 @@ export const OrderManagement: React.FC = () => {
               return (
                 <div
                   key={item.id}
-                  className={`p-4 rounded-lg border-2 transition cursor-pointer ${
-                    isInOrder
+                  className={`p-4 rounded-lg border-2 transition cursor-pointer ${isInOrder
                       ? 'border-primary-500 bg-primary-50'
                       : 'border-gray-200 bg-white hover:border-primary-300'
-                  }`}
+                    }`}
                 >
                   <div className="flex justify-between items-start mb-2">
                     <div className="flex-1">

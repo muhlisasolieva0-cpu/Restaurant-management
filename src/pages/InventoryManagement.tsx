@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useRestaurantStore } from '@/store';
-import { Card, Button, Badge, Input, Table } from '@/components/ui';
-import { AlertTriangle, TrendingDown, Plus, Edit2, Trash2 } from 'lucide-react';
+import { Card, Button, Badge } from '@/components/ui';
+import { AlertTriangle, Plus, Edit2, Trash2 } from 'lucide-react';
 import { formatDate } from '@/utils/helpers';
 
 export const InventoryManagement: React.FC = () => {
-  const { inventory, getLowStockItems, updateInventoryQuantity } = useRestaurantStore();
+  const { inventory, getLowStockItems } = useRestaurantStore();
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const lowStockItems = getLowStockItems();
 
@@ -15,7 +15,6 @@ export const InventoryManagement: React.FC = () => {
     : inventory.filter(item => item.category === filterCategory);
 
   const totalInventoryValue = inventory.reduce((sum, item) => sum + (item.quantity * item.cost), 0);
-  const lowStockValue = lowStockItems.reduce((sum, item) => sum + (item.quantity * item.cost), 0);
 
   return (
     <div className="space-y-6">
@@ -72,11 +71,10 @@ export const InventoryManagement: React.FC = () => {
           <button
             key={category}
             onClick={() => setFilterCategory(category)}
-            className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition ${
-              filterCategory === category
+            className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition ${filterCategory === category
                 ? 'bg-primary-600 text-white'
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
+              }`}
           >
             {category.charAt(0).toUpperCase() + category.slice(1)}
           </button>

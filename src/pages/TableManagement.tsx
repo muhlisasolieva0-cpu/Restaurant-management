@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { useRestaurantStore } from '@/store';
-import { Card, Button, Badge, Input } from '@/components/ui';
-import { Users, Plus, Edit2, Trash2 } from 'lucide-react';
-import { getStatusColor } from '@/utils/helpers';
+import { Card, Button, Badge } from '@/components/ui';
 
 export const TableManagement: React.FC = () => {
   const { tables, updateTableStatus, releaseTable } = useRestaurantStore();
@@ -64,9 +62,8 @@ export const TableManagement: React.FC = () => {
             <div
               key={table.id}
               onClick={() => setSelectedTable(table.id)}
-              className={`p-4 rounded-lg border-2 cursor-pointer transition ${getTableColor(table.status)} ${
-                selectedTable === table.id ? 'ring-2 ring-primary-500' : ''
-              }`}
+              className={`p-4 rounded-lg border-2 cursor-pointer transition ${getTableColor(table.status)} ${selectedTable === table.id ? 'ring-2 ring-primary-500' : ''
+                }`}
             >
               <div className="text-center">
                 <p className="text-3xl font-bold text-gray-900">{table.number}</p>

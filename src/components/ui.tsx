@@ -7,6 +7,7 @@ interface CardProps {
   children: React.ReactNode;
   className?: string;
   elevated?: boolean;
+  onClick?: () => void;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -15,9 +16,11 @@ export const Card: React.FC<CardProps> = ({
   children,
   className = '',
   elevated = false,
+  onClick,
 }) => {
   return (
     <div
+      onClick={onClick}
       className={`bg-white rounded-lg p-6 ${
         elevated ? 'shadow-elevation-3' : 'shadow-elevation-1'
       } transition-shadow hover:shadow-elevation-2 ${className}`}
@@ -58,7 +61,7 @@ export const Badge: React.FC<BadgeProps> = ({ children, variant = 'default', siz
 };
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'outline';
+  variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning' | 'outline';
   size?: 'sm' | 'md' | 'lg';
   icon?: LucideIcon;
   loading?: boolean;
@@ -79,6 +82,7 @@ export const Button: React.FC<ButtonProps> = ({
     secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300',
     danger: 'bg-danger-600 text-white hover:bg-danger-700',
     success: 'bg-success-600 text-white hover:bg-success-700',
+    warning: 'bg-warning-600 text-white hover:bg-warning-700',
     outline: 'border-2 border-primary-600 text-primary-600 hover:bg-primary-50',
   };
 
